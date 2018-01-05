@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>JS developer</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+    <div class="main">
+	    <div class="digital-sum"><span id="a7">7</span>+<span id="b4">4</span>=<span id="result">?</span><br><span id="success"></span>
+		</div>
+	    <div class="arrow">
+	        <div class="seven">
+				<div><input type="text" id="seven" class="digit" maxlength="1"/></div>
+			    <img src="img/7.png"/>
+			</div>
+		    <div class="four">
+				<div><input type="text" id="four" class="digit" maxlength="1"/></div>			
+			    <img src="img/7-11.png"/>
+			</div>
+	        <img src="img/sprite.png"/> 
+		</div>	
+    </div> 
+
+<script src="js/jquery-3.2.1.min.js"></script>
+<script>
+$(function() {
+$('.seven').addClass('active').animate({'opacity':'1'}, 2000);
+
+
+/*if ($('#seven').val() && != 7) {
+$('#seven').val().css('color':'red');
+}*/
+});
+
+$( "#seven" ).keyup(function() {
+var seven = $('#seven').val();
+if (seven != '7') {
+$('#seven').css('color','#ff0000');
+$('#a7').css('background','orange');
+} else {
+$('.seven div').text('7');
+$('#a7').css('background','none');
+$('.four').addClass('active').animate({'opacity':'1'}, 2000);
+}
+});
+
+$( "#four" ).keyup(function() {
+var four = $('#four').val();
+if (four != '4') {
+$('#four').css('color','#ff0000');
+$('#b4').css('background','orange');
+} else {
+$('.four div').text('4');
+$('#b4').css('background','none');
+$('#result').html('<input type="text" id="eleven" class="digit" maxlength="2"/>');
+$( "#eleven" ).keyup(function() {
+var eleven = $('#eleven').val();
+if (eleven != '11') {
+$('#eleven').css('color','#ff0000');
+} else {$('#result').text('11');$('#success').text('Всё верно.')}
+});
+}
+});
+
+
+</script>
+</body>
+</html>
