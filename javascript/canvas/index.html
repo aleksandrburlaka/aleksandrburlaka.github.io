@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Canvas API</title>
+    <meta charset="utf-8" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        form {
+            margin-left: 151px;
+        }
+
+        a {
+            margin-left: 177px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 18px;
+            color: #000;
+        }
+
+        select {
+            font-size: 17px;
+            border: 1px dotted #ccc;
+            padding: 2px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        select:focus {
+            outline: none;
+            border: 1px solid #008000;
+        }
+    </style>
+</head>
+
+<script>
+    'use strict'; // определяем контекст
+
+
+    (function (_window) { // аргумент для глобального объекта
+        function init() {
+            // получаем html элемент canvas
+            let canvas = document.querySelector('canvas');
+            let tagA = document.querySelector('a');
+            let select = document.querySelector('select');
+            canvas.width = '1280';
+            canvas.height = '380';
+            // инициализируем
+            let ctx = canvas.getContext("2d");
+
+            // перемешиваем массив (цвета и номера секторов)
+            let arrRandom = [
+                [1, '4b0082'],
+                [2, '800080'],
+                [3, '9932cc'],
+                [4, '9400d3'],
+                [5, '8a2be2'],
+                [6, '9370db'],
+                [7, 'ba55d3'],
+                [8, 'c71585'],
+                [9, 'ff00ff'],
+                [10, 'da70d6']
+            ].sort(function () {
+                return 0.5 - Math.random();
+            });
+
+            // конструктор
+            function Sectors(ctx) {
+                this.radius = 150; // радиус сектора
+                this.startAngle = 0; // начальный угол первого сектора
+                this.endAngle = 36; // конечный угол первого сектора
+                this.translateX = 200; // центр вращения по x
+                this.translateY = 200; // центр вращения по y
+                ctx.translate(this.translateX, this.translateY); // определяем центр вращения
+                // градусы вместо радиан
+                this.rotate = function (degree) {
+                    //let radian = (); //.toFixed(2); // радианы, знаки после запятой
+                    ctx.rotate(degree * Math.PI / 180);
+                }
+            }
+            // очистка области canvas
+            Sectors.prototype.clear = function () {
+                ctx.clearRect(-150, -150, 300, 300);
+            }
+            // рисуем сектора
+            Sectors.prototype.draw = function (degree) { // degree вращение в градусах
+                // очистка сцены
+                this.rotate(degree);
+                for (let i = 0; i < arrRandom.length; i++) { // запихиваем данные в цикл
+                    // получаем радианы
+                    this.startRadian = this.startAngle * Math.PI / 180;
+                    this.endRadian = this.endAngle * Math.PI / 180;
+                    ctx.beginPath(); // начинаем контур
+                    ctx.moveTo(0, 0); // координаты начала контура
+                    ctx.arc(0, 0, this.radius, this.startRadian, this.endRadian); // дуга
+                    ctx.lineTo(0, 0); // к началу контура
+                    ctx.strokeStyle = ctx.fillStyle = '#' + arrRandom[i][1]; // цвет заливки и контура из массива arrDataSectors
+                    ctx.stroke(); // контур
+                    ctx.fill(); // заливка
+                    ctx.save(); // сохраняем стили
+                    ctx.rotate(this.endRadian); // поворачиваем цифру на тот же конечный радиан сектора
+                    // стили текста
+                    ctx.font = '48px sans-serif';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(arrRandom[i][0], 97, -2);
+                    ctx.restore(); // сбрасываем стили 
+                    // сбрасываем углы после полного оборота
+                    if (this.endAngle === 360) {
+                        this.startAngle = 0;
+                        this.endAngle = 36;
+                    } else { // прибавляем угол к следующему сектору
+                        this.startAngle += 36;
+                        this.endAngle += 36;
+                    }
+                }
+            }
+
+
+            // указатель
+            ctx.beginPath();
+            ctx.moveTo(375, 200);
+            ctx.lineTo(400, 225);
+            ctx.lineTo(400, 175);
+            ctx.lineTo(375, 200);
+            ctx.fill();
+
+            // экземпляр объекта
+            let sectors = new Sectors(ctx);
+            // выводим сектора
+            sectors.draw();
+
+            window.wheel = { // новое свойство глобального объекта
+                // свойства
+                angle: null,
+                cancel: null,
+                degree: 6,
+                count: 0,
+                start: function () {
+                    select.style.display = 'block';
+                    tagA.style.display = 'none';
+
+                    function rotation() {
+                        window.wheel.count += window.wheel.degree;
+                        if (window.wheel.angle === window.wheel.count) {
+                            select.style.display = 'none';
+                            select.options[0].selected = true;
+                            tagA.style.display = 'block';
+                            window.cancelAnimationFrame(window.wheel.cancel);
+                            window.wheel.angle = null;
+                        } else {
+                            window.wheel.cancel = window.requestAnimationFrame(rotation);
+                        }
+
+                        sectors.draw(window.wheel.degree); // поворот на degree градус
+                        if (window.wheel.count === 360) {
+                            window.wheel.count = 0;
+                        }
+                    }
+                    rotation();
+                },
+                stop: function (num) {
+                    if (num === undefined) { // если номер сектора не задан
+                        return 'Сектор не задан';
+                    }
+                    let indexNumber = arrRandom.findIndex(function (item) { // получаем индекс
+                        return item[0] == num;
+                    });
+                    window.wheel.angle = (360 - indexNumber * 36) - 18; // останавливаем через угол
+                }
+            }
+            tagA.addEventListener('mousedown', window.wheel.start);
+            select.addEventListener('change', function () {
+                window.wheel.stop(select.value);
+            });
+        }
+
+        // DOM построен, ресурсы загружены, запускаем init
+        _window.onload = function () {
+            init();
+        };
+
+    })(window);
+</script>
+
+<body>
+    <canvas></canvas>
+    <form>
+        <select name="number" id="namber">
+            <option selected="selected">
+                Выбрать
+            </option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    </form>
+    <a href="#">Пуск</a>
+</body>
+
+</html>
