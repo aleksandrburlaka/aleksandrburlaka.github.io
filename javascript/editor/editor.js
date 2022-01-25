@@ -2,74 +2,74 @@
 
     class Parse {
         constructor() {
-            this.data = JSON.parse(data) // получаем объект преобразованный в JSON из php (MySQL)
+            this.data = JSON.parse(data); // получаем объект преобразованный в JSON из php (MySQL)
             this.filter = function (arr, key, value) { // шаблон для фильтрации массива
                 return arr.filter(function (item) {
-                    return +item[key] === +value
+                    return +item[key] === +value;
                 })
             }
         }
         id(arr) {
-            return this.filter(arr, 'id', id)[0] // фильтрация по id параметру из php
+            return this.filter(arr, 'id', id)[0]; // фильтрация по id параметру из php
         }
         section(section, arr) { // функция для фильтрации массива по разделу
-            return this.filter(arr, 'section', section)
+            return this.filter(arr, 'section', section);
         }
         level(level, arr) { // фильтрация по уровню
-            return this.filter(arr, 'level', level)
+            return this.filter(arr, 'level', level);
         }
         cat(cat, arr) { // фильтрация по категории
-            return this.filter(arr, 'cat', cat)
+            return this.filter(arr, 'cat', cat);
         }
         currentData() {
-            this.sectionId = this.id(this.data)['section'] // текущий раздел
-            this.levelId = this.id(this.data)['level'] // текущий уровень
-            this.catId = this.id(this.data)['cat'] // текущая категория
-            this.subCatId = this.id(this.data)['subcat'] // текущая подкатегория  
-            return this
+            this.sectionId = this.id(this.data)['section']; // текущий раздел
+            this.levelId = this.id(this.data)['level']; // текущий уровень
+            this.catId = this.id(this.data)['cat']; // текущая категория
+            this.subCatId = this.id(this.data)['subcat']; // текущая подкатегория  
+            return this;
         }
         filterArray() {
-            this.sortSection = this.section(this.sectionId, this.data) // сортировка по разделу
-            this.sortLevel = this.level(this.levelId, this.data) // сортировка по уровню
-            this.sortCat = this.cat(this.catId, this.data) // сортировка по категории
-            this.level2 = this.level(1, this.sortSection) // сортировка по уровню и разделу (уровень 2)
-            this.subCatLevel3 = this.level(this.levelId - 1, this.cat(this.catId, this.data)) // сортировка массива по уровню и категории (субкатегория уровень 3)
-            this.subCatLevel2 = this.level(this.levelId, this.cat(this.catId, this.data))
-            return this
+            this.sortSection = this.section(this.sectionId, this.data); // сортировка по разделу
+            this.sortLevel = this.level(this.levelId, this.data); // сортировка по уровню
+            this.sortCat = this.cat(this.catId, this.data); // сортировка по категории
+            this.level2 = this.level(1, this.sortSection); // сортировка по уровню и разделу (уровень 2)
+            this.subCatLevel3 = this.level(this.levelId - 1, this.cat(this.catId, this.data)); // сортировка массива по уровню и категории (субкатегория уровень 3)
+            this.subCatLevel2 = this.level(this.levelId, this.cat(this.catId, this.data));
+            return this;
         }
         newData() {
-            this.sectionId = 1
-            this.levelId = 1
-            this.catLast()
-            return this
+            this.sectionId = 1;
+            this.levelId = 1;
+            this.catLast();
+            return this;
         }
         catLast() {
             let lastCat = parse.data.map(function (item) { // все категории
                 return item['cat']
             }).sort(function (a, b) {
-                return a - b
+                return a - b;
             })
-            this.catId = +lastCat[lastCat.length - 1] + 1
+            this.catId = +lastCat[lastCat.length - 1] + 1;
         }
         subCatLast() {
             let lastSubCat = parse.data.map(function (item) { // получаем все субкатегории
                 return item['subcat']
             }).sort(function (a, b) { // сортируем по возрастанию
-                return a - b
+                return a - b;
             })
-            this.subCatId = +lastSubCat[lastSubCat.length - 1] + 1 // номер новой субкатегории
+            this.subCatId = +lastSubCat[lastSubCat.length - 1] + 1; // номер новой субкатегории
         }
     }
-    let parse = new Parse()
+    let parse = new Parse();
 
 
     class Form {
         constructor() {
-            this.form = document.querySelector('form')
-            this.submit()
+            this.form = document.querySelector('form');
+            this.submit();
         }
         element(formElement) {
-            return this.form.querySelector(formElement)
+            return this.form.querySelector(formElement);
         }
         sendForm() {
             let xhr = new XMLHttpRequest();
@@ -90,15 +90,15 @@
             this.form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 if (form.element('#editable').dataset.status === '0') {
-                    form.element('#text').value = form.element('#editable').innerText
+                    form.element('#text').value = form.element('#editable').innerText;
                 } else {
-                    form.element('#text').value = form.element('#editable').innerHTML
+                    form.element('#text').value = form.element('#editable').innerHTML;
                 }
-                form.sendForm()
-            })
+                form.sendForm();
+            });
         }
     }
-    let form = new Form()
+    let form = new Form();
 
 
     class Menu {
@@ -129,7 +129,7 @@
                     parse.catLast();
                     menu.catLast().subCatDefault();
                 }
-            })
+            });
             form.element('#level select').children[parse.levelId - 1].setAttribute("selected", "selected");
             return this;
         }
@@ -191,7 +191,7 @@
             return this;
         }
     }
-    let menu = new Menu()
+    let menu = new Menu();
 
 
     class Editor {
@@ -201,29 +201,29 @@
         }
         htmlButton() {
             form.element('#html').addEventListener('click', function (e) {
-                e.preventDefault()
+                e.preventDefault();
                 if (form.element('#editable').dataset.status === '0') {
-                    form.element('#editable').classList.remove('html')
-                    form.element('#editable').dataset.status = '1'
-                    form.element('#editable').innerHTML = form.element('#editable').innerText.trim()
+                    form.element('#editable').classList.remove('html');
+                    form.element('#editable').dataset.status = '1';
+                    form.element('#editable').innerHTML = form.element('#editable').innerText.trim();
                 } else {
-                    form.element('#editable').dataset.status = '0'
-                    form.element('#editable').classList.add('html')
-                    form.element('#editable').innerText = form.element('#editable').innerHTML.trim()
+                    form.element('#editable').dataset.status = '0';
+                    form.element('#editable').classList.add('html');
+                    form.element('#editable').innerText = form.element('#editable').innerHTML.trim();
                 }
-            })
+            });
             return this;
         }
         boldButton() {
             form.element('#bold').addEventListener('click', e => {
-                e.preventDefault()
-                let range = document.getSelection().getRangeAt(0)
-                let outer = document.getSelection().focusNode.parentNode
-                console.log(outer)
+                e.preventDefault();
+                let range = document.getSelection().getRangeAt(0);
+                let outer = document.getSelection().focusNode.parentNode;
+                console.log(outer);
                 if (outer.tagName === 'B') {
-                    outer.outerHTML = outer.innerText
+                    outer.outerHTML = outer.innerText;
                 } else {
-                    range.surroundContents(document.createElement('b'))
+                    range.surroundContents(document.createElement('b'));
                 }
             })
             return this;
@@ -300,16 +300,17 @@
                     ul.insertAdjacentHTML("beforeend", "<li class = 'li'>&nbsp;</li>"); // добавление HTML в конец списка
                 } else if (document.getSelection().focusNode.parentNode.parentNode.tagName === 'PRE') {
                     range.setStartAfter(document.getSelection().focusNode.parentNode);
-                    let ul = document.createElement('ul'); // создание элемента ul
-                    document.getSelection().focusNode.after(ul); // добавление элемента ul за смещённую позицию
-                    ul.innerHTML = "<li class = 'li'>&nbsp;</li>";
+                    this.createUlLi();
                 } else {
-                    let ul = document.createElement('ul'); // создание элемента ul
-                    document.getSelection().focusNode.after(ul); // добавление элемента ul за смещённую позицию
-                    ul.innerHTML = "<li class = 'li'>&nbsp;</li>";
+                    this.createUlLi();
                 }
             });
             return this;
+        }
+        createUlLi() {
+            let ul = document.createElement('ul'); // создание элемента ul
+            document.getSelection().focusNode.after(ul); // добавление элемента ul за смещённую позицию
+            ul.innerHTML = "<li class = 'li'>&nbsp;</li>";
         }
     }
     const editor = new Editor();
