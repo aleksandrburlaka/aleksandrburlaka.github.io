@@ -1,4 +1,4 @@
-    // Визуальный редактор, админка
+    // Визуальный редактор с публикацией по разделу, уровню вложенности, категории и субкатегории (админка)
 
     class Parse {
         constructor() {
@@ -48,15 +48,18 @@
                 return item['cat']
             }).sort(function (a, b) {
                 return a - b;
-            })
+            });
             this.catId = +lastCat[lastCat.length - 1] + 1;
         }
         subCatLast() {
-            let lastSubCat = parse.data.map(function (item) { // получаем все субкатегории
-                return item['subcat']
+            //console.log(parse.catId)
+            let lastSubCat = parse.data.filter(function (item) { // фильтруем по выбранной категории
+                return +item['cat'] === +parse.catId;
+            }).map(function (item) { // получаем все субкатегории
+                return item['subcat'];
             }).sort(function (a, b) { // сортируем по возрастанию
                 return a - b;
-            })
+            });
             this.subCatId = +lastSubCat[lastSubCat.length - 1] + 1; // номер новой субкатегории
         }
     }
@@ -77,9 +80,9 @@
             xhr.open("POST", "/admin/articles/upload.php", true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
-                    let an = xhr.responseText;
-                    if (an) {
-                        console.log(an);
+                    let answer = xhr.responseText;
+                    if (answer) {
+                        console.log(answer);
                     }
                     document.location.href = '/admin/bs.php';
                 }
@@ -122,7 +125,7 @@
                 parse.catId = form.element('#cat select').value;
                 parse.filterArray();
                 if (+parse.levelId === 2) {
-                    menu.subCat();
+                    menu.subCatLast();
                 } else if (+parse.levelId === 3) {
                     menu.subCat();
                 } else {
@@ -144,8 +147,12 @@
             form.element('#cat select').addEventListener('change', function () {
                 parse.catId = this.value;
                 parse.filterArray();
-                menu.subCat();
-            })
+                if (+parse.levelId === 2) {
+                    menu.subCatLast();
+                } else {
+                    menu.subCat();
+                }
+            });
             form.element('#cat select').innerHTML = '';
             form.element('#cat').classList.remove('hide');
             for (let key in parse.level2) {
@@ -267,6 +274,9 @@
                 range.setStartAfter(document.getSelection().focusNode.parentNode.parentNode); // устанавливаем диапазон прямо за тегом pre
             }
         }
+        numberParentNode() {
+
+        }
         preCssButton() {
             form.element('#precss').addEventListener('click', e => {
                 e.preventDefault();
@@ -299,10 +309,16 @@
                     let ul = document.getSelection().focusNode.closest('ul'); // текущий список ul
                     ul.insertAdjacentHTML("beforeend", "<li class = 'li'>&nbsp;</li>"); // добавление HTML в конец списка
                 } else if (document.getSelection().focusNode.parentNode.parentNode.tagName === 'PRE') {
-                    range.setStartAfter(document.getSelection().focusNode.parentNode);
-                    this.createUlLi();
+                    if (document.getSelection().focusNode.parentNode.parentNode.parentNode.tagName === 'LI') {
+                        document.getSelection().focusNode.parentNode.parentNode.parentNode.insertAdjacentHTML('afterend', "<li class = 'li'>&nbsp;</li > ");
+                    } else {
+                        range.setStartAfter(document.getSelection().focusNode.parentNode);
+                        this.createUlLi();
+                    }
                 } else {
-                    this.createUlLi();
+                    let ul = document.createElement('ul'); // создание элемента ul
+                    range.insertNode(ul)
+                    ul.innerHTML = "<li class = 'li'>&nbsp;</li>";
                 }
             });
             return this;
