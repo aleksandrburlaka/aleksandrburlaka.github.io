@@ -1,0 +1,15 @@
+#/src/img/min/**/*
+#/src/main.min.js
+#gulpfile.js
+#.gitignore
+#*.7z
+#*.gz
+#*.iso
+#*.jar
+#*.rar
+#*.tar
+#*.zip
+#*.idea
+#*.psd
+#*.ai
+#*.fla
