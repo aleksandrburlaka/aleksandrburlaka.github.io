@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 calculator" align="center">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 bg">
+                    <div class="bg_display">
+                        <div class="row displayBox">
+                            <p class="displayText" id="display">0</p>
+                        </div>
+                    </div>
+                    <div class="row numberPad">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <button class="btn btn-top" id="sqrt">√</button>
+                                <button class="btn btn-top" id="square">x<sup>2</sup></button>
+                                <button class="btn btn-top" id="plus_minus">
+                                    <!--&#177;-->+/-</button>
+                                <button class="btn clear btn-top" id="clear">C</button>
+                            </div>
+                            <div class="row">
+                                <button class="btn" id="seven">7</button>
+                                <button class="btn" id="eight">8</button>
+                                <button class="btn" id="nine">9</button>
+                                <button id="divide" class="btn btn-operation hvr-fade">÷</button>
+                            </div>
+                            <div class="row">
+                                <button class="btn" id="four">4</button>
+                                <button class="btn" id="five">5</button>
+                                <button class="btn" id="six">6</button>
+                                <button id="multiply" class="btn btn-operation hvr-fade">×</button>
+                            </div>
+                            <div class="row">
+                                <button class="btn" id="one">1</button>
+                                <button class="btn" id="two">2</button>
+                                <button class="btn" id="three">3</button>
+                                <button id="subtract" class="btn btn-operation hvr-fade">−</button>
+                            </div>
+                            <div class="row">
+                                <button class="btn" id="zero">0</button>
+                                <button class="btn" id="decimal">.</button>
+                                <button id="add" class="btn btn-operation hvr-fade">+</button>
+                                <button id="equals" class="btn btn-operation equals hvr-back-pulse">=</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/cl.js"></script>
+</body>
+
+</html>
