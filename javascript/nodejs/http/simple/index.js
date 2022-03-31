@@ -1,5 +1,5 @@
 const http = require("http");
-const host = '89.223.123.174';
+const host = '0.0.0.0'; // ip сервера
 const port = '80';
 
 const requestListener = function(req, res) {
